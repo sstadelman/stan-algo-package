@@ -1,3 +1,3 @@
-# StanAlgoPackage
+# stan-algo-package
 
-A description of this package.
+general study package for ds and algorithms
