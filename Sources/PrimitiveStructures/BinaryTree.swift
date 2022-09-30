@@ -11,17 +11,20 @@ open class BinaryTree<T>: CustomStringConvertible where T: Comparable {
     var value: T
     var left: BinaryTree<T>? = nil
     var right: BinaryTree<T>? = nil
+    let maintenance: ((BinaryTree<T>) -> Void)?
     
-    public init(_ value: T) {
+    public required init(_ value: T, maintenance: ((BinaryTree<T>) -> Void)?) {
         self.value = value
+        self.maintenance = maintenance
     }
     
+    // randomized balanced
     open func insert(_ newValue: T) {
         switch (left, right) {
             case (.none, .some(_)):
-                left = BinaryTree(newValue)
+                left = BinaryTree(newValue, maintenance: maintenance)
             case (.some(_), .none):
-                right = BinaryTree(newValue)
+                right = BinaryTree(newValue, maintenance: maintenance)
             case let (.some(l), .some(r)):
                 if Bool.random() {
                     l.insert(newValue)
@@ -30,11 +33,12 @@ open class BinaryTree<T>: CustomStringConvertible where T: Comparable {
                 }
             case (.none, .none):
                 if Bool.random() {
-                    left = BinaryTree(newValue)
+                    left = BinaryTree(newValue, maintenance: maintenance)
                 } else {
-                    right = BinaryTree(newValue)
+                    right = BinaryTree(newValue, maintenance: maintenance)
                 }
         }
+        maintenance?(self)
     }
     
     open func contains(_ value: T) -> Bool {
